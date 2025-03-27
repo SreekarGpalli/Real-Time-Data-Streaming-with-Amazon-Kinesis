@@ -1,69 +1,45 @@
-# Amazon Kinesis Real-Time Streaming Project
+# Real-Time Streaming with Amazon Kinesis
 
-This personal project demonstrates how to build a real-time streaming architecture using Amazon Kinesis, AWS Lambda, and Kinesis Data Firehose. I created this project to explore how to process, analyze, and deliver streaming data in real time, with a focus on practical use cases like IoT and telemetry data.
+[![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)](https://aws.amazon.com)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 
-## Project Flow
+A personal project demonstrating real-time data streaming using Amazon Kinesis, AWS Lambda, and Kinesis Data Firehose.
 
-Below is the flow diagram that outlines the architecture of this project:
-
-![Project Flow Diagram](project_flow.png)
+![Project Architecture](docs/project_flow.png)
 
 ## Overview
 
-The project consists of three main components:
+This project implements a real-time streaming pipeline that:
+1. Generates synthetic geolocation data using a Lambda producer
+2. Streams data through Kinesis Data Stream
+3. Processes data with a Lambda consumer
+4. Archives data in S3 using Kinesis Data Firehose
 
-1. **Kinesis Data Stream**: Acts as the backbone for streaming data.
-2. **Lambda Functions**:
-   - **Producer Lambda**: Generates and sends events to the Kinesis Data Stream.
-   - **Consumer Lambda**: Consumes, decodes, and processes events from the Kinesis Data Stream.
-3. **Kinesis Data Firehose**: Delivers streaming data from the Kinesis Data Stream into an S3 bucket for storage and further analysis.
+## Features
+
+- 🌐 Real-time data generation with synthetic GPS coordinates
+- 🔄 Kinesis Data Stream for durable data ingestion
+- 🚀 Serverless architecture using AWS Lambda
+- 📦 Data persistence with Kinesis Firehose & S3
+- 📊 CloudWatch integration for monitoring
 
 ## Prerequisites
 
-- **AWS Account**: Ensure you have an AWS account with appropriate permissions.
-- **AWS CLI (Optional)**: For command-line operations.
-- **Python 3.11**: Used for the Lambda functions.
-- Familiarity with AWS Lambda, Amazon Kinesis, and S3.
+- AWS Account
+- AWS CLI configured with proper credentials
+- IAM permissions to create:
+  - Kinesis Streams
+  - Lambda Functions
+  - IAM Roles
+  - S3 Buckets
+- Python 3.11+
 
-## Project Setup
+## Architecture
 
-### 1. Create a Kinesis Data Stream
-
-- **Service**: Amazon Kinesis
-- **Stream Name**: `TelemetricsStream`
-- **Capacity Mode**: On-demand
-
-### 2. Develop the Producer Lambda Function
-
-This Lambda function continuously sends telemetry events to the Kinesis Data Stream.
-
-#### Steps:
-1. Create a Lambda function named **`produceKinesisEvents`** using Python 3.11.
-2. Use an existing IAM role (e.g., `KinesisLambdaRole`) with the necessary permissions.
-3. Insert the following code in `producer_lambda/produceKinesisEvents.py`:
-
-   ```python
-   import json
-   import boto3
-   import uuid
-   import random
-   import time
-
-   def lambda_handler(event, context):
-       client = boto3.client('kinesis')
-       
-       while True:
-           data = {
-               "id": str(uuid.uuid4()),
-               "latitude": random.uniform(-90, 90),
-               "longtitude": random.uniform(0, 180)
-           }
-           
-           response = client.put_record(
-               StreamName="TelemetricsStream",
-               PartitionKey="geolocation",
-               Data=json.dumps(data)
-           )
-           
-           print(response)
-           time.sleep(random.random())
+```mermaid
+graph TD
+    A[Producer Lambda] -->|Put records| B[Kinesis Data Stream]
+    B -->|Trigger| C[Consumer Lambda]
+    B -->|Firehose| D[S3 Bucket]
+    C -->|Logs| E[CloudWatch]
+    D -->|Data Files| F[Analytics]
