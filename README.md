@@ -32,7 +32,6 @@ This project implements a real-time streaming pipeline that:
   - Lambda Functions
   - IAM Roles
   - S3 Buckets
-- Python 3.11+
 
 ## Architecture
 
