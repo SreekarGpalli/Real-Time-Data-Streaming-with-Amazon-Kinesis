@@ -5,7 +5,7 @@
 
 A personal project demonstrating real-time data streaming using Amazon Kinesis, AWS Lambda, and Kinesis Data Firehose.
 
-![Project Architecture](docs/project_flow.png)
+![Project Architecture](project_flow.png)
 
 ## Overview
 
