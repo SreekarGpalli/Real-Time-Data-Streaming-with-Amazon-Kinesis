@@ -21,7 +21,6 @@ This project implements a real-time streaming pipeline that:
 - 🔄 Kinesis Data Stream for durable data ingestion
 - 🚀 Serverless architecture using AWS Lambda
 - 📦 Data persistence with Kinesis Firehose & S3
-- 📊 CloudWatch integration for monitoring
 
 ## Prerequisites
 
